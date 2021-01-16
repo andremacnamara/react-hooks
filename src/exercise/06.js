@@ -11,15 +11,17 @@ import {fetchPokemon, PokemonInfoFallback, PokemonDataView, PokemonForm} from '.
 function PokemonInfo({pokemonName}) {
   // 🐨 Have state for the pokemon (null)
   const [pokemon, setPokemon] = React.useState(null);
+  const [error, setError] = React.useState('');
 
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
   React.useEffect(() => {
     if(!pokemonName) return;
 
+    setError(null);
     setPokemon(null);
 
-    fetchPokemon(pokemonName).then(pokemon => setPokemon(pokemon));
+    fetchPokemon(pokemonName).then(pokemon => setPokemon(pokemon), error => setError(error));
 
   }, [pokemonName]);
   // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
@@ -35,7 +37,13 @@ function PokemonInfo({pokemonName}) {
   //   3. pokemon: <PokemonDataView pokemon={pokemon} />
 
   // 💣 remove this
-  if(!pokemonName) {
+  if(error){
+    return (
+      <div role="alert">
+        There was an error: <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+      </div>
+    )
+  } else if(!pokemonName) {
     return 'Submit a pokemon';
   } else if(!pokemon){
     return <PokemonInfoFallback name={pokemonName} />

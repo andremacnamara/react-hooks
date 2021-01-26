@@ -2,41 +2,37 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
-// 🐨 you'll want the following additional things from '../pokemon':
-// fetchPokemon: the function we call to get the pokemon info
-// PokemonInfoFallback: the thing we show while we're loading the pokemon info
-// PokemonDataView: the stuff we use to display the pokemon info
+
 import {fetchPokemon, PokemonInfoFallback, PokemonDataView, PokemonForm} from '../pokemon'
 
 function PokemonInfo({pokemonName}) {
-  // 🐨 Have state for the pokemon (null)
-  const [pokemon, setPokemon] = React.useState(null);
-  const [error, setError] = React.useState('');
-  const [status, setStatus] = React.useState('idle');
+  // const [pokemon, setPokemon] = React.useState(null);
+  // const [error, setError] = React.useState('');
+  // const [status, setStatus] = React.useState('idle');
 
-//   idle: no request made yet
-// pending: request started
-// resolved: request successful
-// rejected: 
+  const [state, setState] = React.useState({ 
+    pokemon: null,
+    error: null,
+    status: 'idle' 
+  });
+  
+  const {pokemon, error, status} = state;
 
-  // 🐨 use React.useEffect where the callback should be called whenever the
-  // pokemon name changes.
   React.useEffect(() => {
     if(!pokemonName) return;
 
-    setStatus('pending');
+    setState({status: 'pending'});
     // setError(null);
     // setPokemon(null);
 
     fetchPokemon(pokemonName).then(
       pokemon => {
-        setPokemon(pokemon)
-        setStatus('resolved')
+        setState({status: 'resolved', pokemon});
       }, 
       
       error => {
-        setError(error)
-        setStatus('rejected')
+        setState(error)
+        setState({status: 'rejected'});
       }
     );
 
